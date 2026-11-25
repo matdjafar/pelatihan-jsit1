@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polling Media Digital • JSIT Wilayah Provinsi Gorontalo</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-[#e8f4ff] via-[#f4fbf8] to-[#fff5eb] text-slate-800 font-sans antialiased flex items-center justify-center p-4 sm:p-6 relative overflow-x-hidden">
+
+    <!-- Latar Cahaya Liquid Glass -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
+        <div class="absolute -top-24 -left-16 w-72 h-72 rounded-full bg-sky-300/35 blur-3xl"></div>
+        <div class="absolute top-1/2 -right-20 w-80 h-80 rounded-full bg-emerald-300/30 blur-3xl"></div>
+        <div class="absolute -bottom-24 left-1/4 w-72 h-72 rounded-full bg-amber-200/35 blur-3xl"></div>
+    </div>
+
+    <!-- Kartu Utama Liquid Glass -->
+    <main class="relative z-10 w-full max-w-lg bg-white/75 backdrop-blur-2xl border border-white/95 rounded-[28px] shadow-[0_24px_60px_rgba(15,23,42,0.09),inset_0_1px_1px_rgba(255,255,255,0.95)] overflow-hidden">
+
+        <!-- Header Identitas Kegiatan -->
+        <div class="px-5 sm:px-7 pt-6 pb-4 bg-gradient-to-r from-emerald-50/80 via-white/70 to-sky-50/80 border-b border-white/90">
+            <div class="flex items-center justify-between gap-3 mb-3">
+                <div class="inline-flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-white/90 border border-white shadow-sm">
+                    <img
+                        src="https://iili.io/of4exmG.png"
+                        alt="Logo JSIT Indonesia"
+                        onerror="this.onerror=null;this.src='https://placehold.co/64x64/ecfdf5/047857?text=JSIT';"
+                        class="w-6 h-6 object-contain"
+                    >
+                    <span class="text-[11px] font-bold text-emerald-800">JSIT Wilayah Provinsi Gorontalo</span>
+                </div>
+                <span id="apiStatusPill" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100/90 text-emerald-800 text-[10px] font-bold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Siap Mengirim
+                </span>
+            </div>
+
+            <h1 class="text-xl sm:text-2xl font-black text-slate-900 leading-tight tracking-tight">
+                Media Digital Favorit Anda di Kelas
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+                Pilih <strong>1 atau lebih</strong> media digital yang paling sering Ustadz/Ustadzah gunakan. Hasil langsung tampil <em>realtime</em> di layar presentasi!
+            </p>
+        </div>
+
+        <!-- PANEL FORM POLLING -->
+        <form id="pollingForm" class="p-5 sm:p-7 space-y-5">
+            <!-- Input Opsional Nama & Sekolah -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label for="inputVoterName" class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Nama (Opsional)</label>
+                    <input
+                        id="inputVoterName"
+                        type="text"
+                        maxlength="60"
+                        placeholder="Misal: Ustadzah Aisyah"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-white/90 border border-slate-200/90 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
+                    >
+                </div>
+                <div>
+                    <label for="inputVoterSchool" class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Asal Sekolah (Opsional)</label>
+                    <input
+                        id="inputVoterSchool"
+                        type="text"
+                        maxlength="60"
+                        placeholder="Misal: SMAIT Al Ishlah"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-white/90 border border-slate-200/90 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
+                    >
+                </div>
+            </div>
+
+            <!-- Daftar Pilihan Media Digital -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700">Pilih Media Digital</span>
+                    <span id="selectedCounter" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">0 dipilih</span>
+                </div>
+
+                <div id="optionsList" class="space-y-2">
+                    <!-- Diisi via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Pesan Error / Peringatan Inline -->
+            <div id="errorBox" class="hidden rounded-2xl bg-rose-50 border border-rose-200 px-4 py-3 text-xs font-semibold text-rose-700"></div>
+
+            <!-- Tombol Kirim -->
+            <button
+                id="btnSubmit"
+                type="submit"
+                class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 hover:from-emerald-500 hover:to-sky-500 active:scale-[0.99] text-white text-sm sm:text-base font-extrabold shadow-[0_12px_28px_rgba(16,185,129,0.28)] transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+                <span id="btnSubmitLabel">Kirim Pilihan ke Layar Presentasi</span>
+                <svg id="btnSubmitIcon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                </svg>
+            </button>
+
+            <p class="text-[11px] text-center text-slate-500">
+                Berbagi Praktik Baik • Narasumber: <strong>Rahmat Djafar, S.Pd., Gr.</strong>
+            </p>
+        </form>
+
+        <!-- PANEL SUKSES (Muncul setelah pilihan berhasil terkirim) -->
+        <section id="successPanel" class="hidden p-6 sm:p-8 text-center space-y-4">
+            <div class="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-[0_12px_28px_rgba(16,185,129,0.3)]">
+                <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-xl sm:text-2xl font-black text-slate-900">Jazakumullahu Khairan!</h2>
+                <p id="successSubtitle" class="text-xs sm:text-sm text-slate-600 mt-1">
+                    Pilihan Anda telah tercatat dan langsung tampil secara <em>realtime</em> di layar proyektor.
+                </p>
+            </div>
+
+            <!-- Ringkasan Pilihan yang Baru Dikirim -->
+            <div class="bg-white/85 rounded-2xl p-4 border border-white shadow-sm text-left">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 mb-2">Pilihan Anda:</p>
+                <div id="submittedChips" class="flex flex-wrap gap-1.5"></div>
+            </div>
+
+            <div class="pt-2">
+                <button id="btnVoteAgain" type="button" class="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold shadow-sm transition cursor-pointer">
+                    Isi Lagi / Ganti Peserta
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- =========================================================
+         JAVASCRIPT: Logika Polling & Pengiriman Anti-Error Multi-Login
+         ========================================================= -->
+    <script>
+        // =============================================================
+        // KONFIGURASI BACKEND API (Tempel URL /exec dari Code.gs di sini)
+        // =============================================================
+        const APP_CONFIG = {
+            // Jika dikosongkan, halaman otomatis membaca parameter ?api=... dari QR Code presentasi
+            GAS_API_URL: ''
+        };
+
+        (function () {
+            // Daftar media digital (HARUS sama persis dengan presentasi_jsit_gorontalo.html dan Code.gs)
+            const POLL_OPTIONS = [
+                {
+                    id: 'Canva / Slide Presentasi',
+                    desc: 'PowerPoint, Canva Edu, infografis, atau poster materi',
+                    tag: 'Visual'
+                },
+                {
+                    id: 'YouTube / Video Pembelajaran',
+                    desc: 'Video penjelasan, animasi pendek, atau rekaman mengajar',
+                    tag: 'Audio-Visual'
+                },
+                {
+                    id: 'Ruang Murid (Kemendikdasmen)',
+                    desc: 'MPI, Gim Edukasi, Lab Maya & Sumber Belajar Rumah Pendidikan',
+                    tag: 'Nasional'
+                },
+                {
+                    id: 'Quizizz / Wordwall / Kahoot',
+                    desc: 'Kuis interaktif, Paper Mode, roda putar, & gamifikasi kelas',
+                    tag: 'Asesmen'
+                },
+                {
+                    id: 'Google Form / Workspace',
+                    desc: 'Latihan soal otomatis, Google Slides, Docs, atau Sites',
+                    tag: 'Kolaborasi'
+                },
+                {
+                    id: 'Media Digital Dibuat Mandiri (Manual / Bantuan AI)',
+                    desc: 'Presentasi HTML, gim/kuis web, atau simulasi buatan sendiri',
+                    tag: 'Kreatif ★'
+                },
+                {
+                    id: 'AI (Gemini / ChatGPT)',
+                    desc: 'Asisten penyusun modul TERPADU, soal HOTS, dan ide ajar',
+                    tag: 'AI Asisten'
+                },
+                {
+                    id: 'Lab Maya / PhET / Simulasi',
+                    desc: 'Praktikum virtual IPA, GeoGebra Matematika, atau tur 360°',
+                    tag: 'Eksplorasi'
+                },
+                {
+                    id: 'Media Digital Lainnya',
+                    desc: 'Aplikasi pembelajaran khusus mapel/tahfidz/bahasa lainnya',
+                    tag: 'Lainnya'
+                }
+            ];
+
+            const pollingForm = document.getElementById('pollingForm');
+            const optionsList = document.getElementById('optionsList');
+            const selectedCounter = document.getElementById('selectedCounter');
+            const inputVoterName = document.getElementById('inputVoterName');
+            const inputVoterSchool = document.getElementById('inputVoterSchool');
+            const errorBox = document.getElementById('errorBox');
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnSubmitLabel = document.getElementById('btnSubmitLabel');
+            const apiStatusPill = document.getElementById('apiStatusPill');
+            const successPanel = document.getElementById('successPanel');
+            const successSubtitle = document.getElementById('successSubtitle');
+            const submittedChips = document.getElementById('submittedChips');
+            const btnVoteAgain = document.getElementById('btnVoteAgain');
+
+            // Ambil URL Backend API dari parameter ?api=... atau APP_CONFIG.GAS_API_URL
+            function resolveGasApiUrl() {
+                try {
+                    const params = new URLSearchParams(window.location.search);
+                    const fromQuery = params.get('api');
+                    if (fromQuery && fromQuery.trim()) {
+                        return fromQuery.trim();
+                    }
+                } catch (err) {
+                    // Abaikan
+                }
+                return (APP_CONFIG.GAS_API_URL || '').trim();
+            }
+
+            const GAS_API_URL = resolveGasApiUrl();
+
+            if (!GAS_API_URL && apiStatusPill) {
+                apiStatusPill.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold';
+                apiStatusPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>API Belum Diatur';
+            }
+
+            // Render daftar checkbox pilihan media digital
+            function renderOptions() {
+                optionsList.innerHTML = POLL_OPTIONS.map((opt, idx) => `
+                    <label class="option-card flex items-start gap-3 p-3 rounded-2xl bg-white/85 hover:bg-white border border-slate-200/80 shadow-sm cursor-pointer transition select-none">
+                        <input
+                            type="checkbox"
+                            name="mediaChoice"
+                            value="${opt.id}"
+                            class="mt-0.5 w-5 h-5 rounded-md accent-emerald-600 shrink-0 cursor-pointer"
+                        >
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-xs sm:text-sm font-bold text-slate-900 leading-snug">${opt.id}</span>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${idx === 5 ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-600'} shrink-0">${opt.tag}</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">${opt.desc}</p>
+                        </div>
+                    </label>
+                `).join('');
+
+                optionsList.querySelectorAll('input[name="mediaChoice"]').forEach(cb => {
+                    cb.addEventListener('change', () => {
+                        const card = cb.closest('.option-card');
+                        if (card) {
+                            card.classList.toggle('ring-2', cb.checked);
+                            card.classList.toggle('ring-emerald-500', cb.checked);
+                            card.classList.toggle('bg-emerald-50/70', cb.checked);
+                            card.classList.toggle('border-emerald-300', cb.checked);
+                        }
+                        updateCounter();
+                        hideError();
+                    });
+                });
+            }
+
+            function getSelectedChoices() {
+                return Array.from(optionsList.querySelectorAll('input[name="mediaChoice"]:checked')).map(el => el.value);
+            }
+
+            function updateCounter() {
+                const count = getSelectedChoices().length;
+                selectedCounter.textContent = `${count} dipilih`;
+                selectedCounter.className = count > 0
+                    ? 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800'
+                    : 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600';
+            }
+
+            function showError(msg) {
+                errorBox.textContent = msg;
+                errorBox.classList.remove('hidden');
+            }
+
+            function hideError() {
+                errorBox.classList.add('hidden');
+            }
+
+            // Fallback JSONP GET jika jaringan sekolah/HP membatasi fetch POST
+            function submitViaJsonp(url, payload) {
+                return new Promise((resolve, reject) => {
+                    const cbName = '__jsitVoteCb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+                    const script = document.createElement('script');
+                    const sep = url.includes('?') ? '&' : '?';
+                    let done = false;
+
+                    const cleanup = () => {
+                        done = true;
+                        if (script.parentNode) script.parentNode.removeChild(script);
+                        try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+                    };
+
+                    const timer = setTimeout(() => {
+                        if (!done) {
+                            cleanup();
+                            reject(new Error('Koneksi habis waktu (timeout). Silakan coba lagi.'));
+                        }
+                    }, 12000);
+
+                    window[cbName] = (res) => {
+                        clearTimeout(timer);
+                        cleanup();
+                        resolve(res);
+                    };
+
+                    script.onerror = () => {
+                        clearTimeout(timer);
+                        cleanup();
+                        reject(new Error('Gagal terhubung ke server polling.'));
+                    };
+
+                    const qs = new URLSearchParams({
+                        action: 'vote',
+                        voter: payload.voter,
+                        school: payload.school,
+                        choices: payload.choices.join(' | '),
+                        callback: cbName,
+                        _t: String(Date.now())
+                    });
+
+                    script.src = `${url}${sep}${qs.toString()}`;
+                    document.body.appendChild(script);
+                });
+            }
+
+            async function sendVoteToBackend(payload) {
+                if (!GAS_API_URL) {
+                    throw new Error('URL Backend API (Code.gs) belum diatur. Hubungi narasumber atau isi APP_CONFIG.GAS_API_URL di polling.html.');
+                }
+
+                // Metode 1 (Utama): POST text/plain + credentials: 'omit' (bebas CORS preflight & bebas bug multi-login Google!)
+                try {
+                    const res = await fetch(GAS_API_URL, {
+                        method: 'POST',
+                        mode: 'cors',
+                        credentials: 'omit',
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.ok) return data;
+                        throw new Error((data && data.message) || 'Server menolak data.');
+                    }
+                } catch (postErr) {
+                    // Metode 2 (Fallback otomatis): GET JSONP agar tetap tembus di segala kondisi browser
+                    const jsonpRes = await submitViaJsonp(GAS_API_URL, payload);
+                    if (jsonpRes && jsonpRes.ok) return jsonpRes;
+                    throw new Error((jsonpRes && jsonpRes.message) || postErr.message || 'Gagal mengirim suara.');
+                }
+            }
+
+            pollingForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                hideError();
+
+                const choices = getSelectedChoices();
+                if (!choices.length) {
+                    showError('Silakan centang minimal 1 media digital terlebih dahulu.');
+                    return;
+                }
+
+                const payload = {
+                    voter: (inputVoterName.value || '').trim(),
+                    school: (inputVoterSchool.value || '').trim(),
+                    choices: choices
+                };
+
+                btnSubmit.disabled = true;
+                btnSubmitLabel.textContent = 'Mengirim pilihan...';
+
+                try {
+                    const result = await sendVoteToBackend(payload);
+                    submittedChips.innerHTML = choices
+                        .map(c => `<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">${c}</span>`)
+                        .join('');
+                    if (result && result.message) {
+                        successSubtitle.textContent = result.message;
+                    }
+                    pollingForm.classList.add('hidden');
+                    successPanel.classList.remove('hidden');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } catch (err) {
+                    showError(err.message || 'Terjadi kendala saat mengirim. Silakan coba klik kirim sekali lagi.');
+                } finally {
+                    btnSubmit.disabled = false;
+                    btnSubmitLabel.textContent = 'Kirim Pilihan ke Layar Presentasi';
+                }
+            });
+
+            btnVoteAgain.addEventListener('click', () => {
+                pollingForm.reset();
+                optionsList.querySelectorAll('.option-card').forEach(card => {
+                    card.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-50/70', 'border-emerald-300');
+                });
+                updateCounter();
+                hideError();
+                successPanel.classList.add('hidden');
+                pollingForm.classList.remove('hidden');
+            });
+
+            renderOptions();
+            updateCounter();
+        })();
+    </script>
+</body>
+</html>
