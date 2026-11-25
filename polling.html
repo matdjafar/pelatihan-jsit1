@@ -151,15 +151,14 @@
          ========================================================= -->
     <script>
         // =============================================================
-        // KONFIGURASI BACKEND API (Tempel URL /exec dari Code.gs di sini)
+        // KONFIGURASI BACKEND API (Terhubung ke Google Apps Script /exec)
         // =============================================================
         const APP_CONFIG = {
-            // Jika dikosongkan, halaman otomatis membaca parameter ?api=... dari QR Code presentasi
-            GAS_API_URL: ''
+            GAS_API_URL: 'https://script.google.com/macros/s/AKfycbzKIqVce47vsTL0ff8XAAvPKw90Y6tcpM39yFp9RioGYWRI9J5MUYauFmqWp8_bThNw/exec'
         };
 
         (function () {
-            // Daftar media digital (HARUS sama persis dengan presentasi_jsit_gorontalo.html dan Code.gs)
+            // Daftar media digital (sinkron dengan presentasi_jsit_gorontalo.html dan Code.gs)
             const POLL_OPTIONS = [
                 {
                     id: 'Canva / Slide Presentasi',
@@ -222,7 +221,6 @@
             const submittedChips = document.getElementById('submittedChips');
             const btnVoteAgain = document.getElementById('btnVoteAgain');
 
-            // Ambil URL Backend API dari parameter ?api=... atau APP_CONFIG.GAS_API_URL
             function resolveGasApiUrl() {
                 try {
                     const params = new URLSearchParams(window.location.search);
@@ -231,7 +229,7 @@
                         return fromQuery.trim();
                     }
                 } catch (err) {
-                    // Abaikan
+                    // Abaikan jika URLSearchParams tidak tersedia
                 }
                 return (APP_CONFIG.GAS_API_URL || '').trim();
             }
@@ -243,7 +241,6 @@
                 apiStatusPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>API Belum Diatur';
             }
 
-            // Render daftar checkbox pilihan media digital
             function renderOptions() {
                 optionsList.innerHTML = POLL_OPTIONS.map((opt, idx) => `
                     <label class="option-card flex items-start gap-3 p-3 rounded-2xl bg-white/85 hover:bg-white border border-slate-200/80 shadow-sm cursor-pointer transition select-none">
@@ -299,7 +296,6 @@
                 errorBox.classList.add('hidden');
             }
 
-            // Fallback JSONP GET jika jaringan sekolah/HP membatasi fetch POST
             function submitViaJsonp(url, payload) {
                 return new Promise((resolve, reject) => {
                     const cbName = '__jsitVoteCb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
@@ -351,7 +347,6 @@
                     throw new Error('URL Backend API (Code.gs) belum diatur. Hubungi narasumber atau isi APP_CONFIG.GAS_API_URL di polling.html.');
                 }
 
-                // Metode 1 (Utama): POST text/plain + credentials: 'omit' (bebas CORS preflight & bebas bug multi-login Google!)
                 try {
                     const res = await fetch(GAS_API_URL, {
                         method: 'POST',
@@ -368,7 +363,6 @@
                         throw new Error((data && data.message) || 'Server menolak data.');
                     }
                 } catch (postErr) {
-                    // Metode 2 (Fallback otomatis): GET JSONP agar tetap tembus di segala kondisi browser
                     const jsonpRes = await submitViaJsonp(GAS_API_URL, payload);
                     if (jsonpRes && jsonpRes.ok) return jsonpRes;
                     throw new Error((jsonpRes && jsonpRes.message) || postErr.message || 'Gagal mengirim suara.');
